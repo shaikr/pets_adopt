@@ -8,14 +8,18 @@ from torch.utils import data
 
 from .datasets.mnist import MNIST
 from .datasets.im_tmdb import CustomDatasetFromImages
+from .datasets.pets_dataset import PetsDataset
 from .transforms import build_transforms
 
 
 def build_dataset(transforms, is_train=True):
     # TODO - currently, no transforms
-    datasets = CustomDatasetFromImages(imgs_dir=r'/data/home/Shai/tmdb/input/posters',
-                                       csv_path=r"/data/home/Shai/tmdb/input/movies_metadata_with_length_3.csv",
-                                       label_column=r"vote_average", is_train=is_train)  # "revenue"
+    # datasets = CustomDatasetFromImages(imgs_dir=r'/data/home/Shai/tmdb/input/posters',
+    #                                   csv_path=r"/data/home/Shai/tmdb/input/movies_metadata_with_length_3.csv",
+    #                                   label_column=r"vote_average", is_train=is_train)  # "revenue"
+    datasets = PetsDataset(imgs_dir=r"/data/home/Shai/petfinder_data",
+                           csv_path=r"/data/home/Shai/petfinder_data",
+                           label_column=r"AdoptionSpeed", is_train=is_train)                                   
     # datasets = MNIST(root='./', train=is_train, transform=transforms, download=True)
     return datasets
 
