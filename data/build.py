@@ -17,9 +17,12 @@ def build_dataset(transforms, is_train=True):
     # datasets = CustomDatasetFromImages(imgs_dir=r'/data/home/Shai/tmdb/input/posters',
     #                                   csv_path=r"/data/home/Shai/tmdb/input/movies_metadata_with_length_3.csv",
     #                                   label_column=r"vote_average", is_train=is_train)  # "revenue"
-    datasets = PetsDataset(imgs_dir=r"/data/home/Shai/petfinder_data",
-                           csv_path=r"/data/home/Shai/petfinder_data",
-                           label_column=r"AdoptionSpeed", is_train=is_train)                                   
+    # datasets = PetsDataset(imgs_dir=r"/data/home/Shai/petfinder_data",
+    #                        csv_path=r"/data/home/Shai/petfinder_data",
+    #                        label_column=r"AdoptionSpeed", is_train=is_train)
+    datasets = PetsDataset(train_imgs_dir=r"/media/ron/Data/google_time/petfinder/train_images",
+                           csv_path=r"/media/ron/Data/google_time/repos/pets_adopt/data/train.csv",
+                           label_column=r"Breed1", is_train=is_train)
     # datasets = MNIST(root='./', train=is_train, transform=transforms, download=True)
     return datasets
 

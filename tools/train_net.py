@@ -20,6 +20,7 @@ from solver import make_optimizer
 
 from utils.logger import setup_logger
 
+import torch
 
 def train(cfg):
     model = build_model(cfg)

@@ -31,13 +31,13 @@ def do_train(
     logger.info("Start training")
     trainer = create_supervised_trainer(model, optimizer, loss_fn, device=device)
     evaluator = create_supervised_evaluator(model, metrics={
-                                                            #'accuracy': Accuracy(),
-                                                            'ce_loss': Loss(loss_fn)}, device=device)
+        # 'accuracy': Accuracy(),
+        'ce_loss': Loss(loss_fn)}, device=device)
     checkpointer = ModelCheckpoint(output_dir, 'mnist', checkpoint_period, n_saved=10, require_empty=False)
     timer = Timer(average=True)
 
     trainer.add_event_handler(Events.EPOCH_COMPLETED, checkpointer, {'model': model,
-                                                                     'optimizer': optimizer })
+                                                                     'optimizer': optimizer})
     timer.attach(trainer, start=Events.EPOCH_STARTED, resume=Events.ITERATION_STARTED,
                  pause=Events.ITERATION_COMPLETED, step=Events.ITERATION_COMPLETED)
 
@@ -57,7 +57,7 @@ def do_train(
         metrics = evaluator.state.metrics
         avg_loss = metrics['ce_loss']
         logger.info("Training Results - Epoch: {}  Avg Loss: {:.4f}"
-                    .format(engine.state.epoch,  avg_loss))
+                    .format(engine.state.epoch, avg_loss))
 
     if val_loader is not None:
         @trainer.on(Events.EPOCH_COMPLETED)
@@ -66,7 +66,7 @@ def do_train(
             metrics = evaluator.state.metrics
             avg_loss = metrics['ce_loss']
             logger.info("Validation Results - Epoch: {} Avg Loss: {:.4f}"
-                        .format(engine.state.epoch,  avg_loss)
+                        .format(engine.state.epoch, avg_loss)
                         )
 
     # adding handlers using `trainer.on` decorator API

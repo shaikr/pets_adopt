@@ -25,7 +25,7 @@ _C.MODEL.NUM_CLASSES = 10
 # -----------------------------------------------------------------------------
 _C.INPUT = CN()
 # Size of the image during training
-_C.INPUT.SIZE_TRAIN = [224,224]
+_C.INPUT.SIZE_TRAIN = [224, 224]
 # Size of the image during test
 _C.INPUT.SIZE_TEST = _C.INPUT.SIZE_TRAIN
 # Minimum scale for the image during training
@@ -84,15 +84,17 @@ _C.SOLVER.LOG_PERIOD = 1
 # Number of images per batch
 # This is global, so if we have 8 GPUs and IMS_PER_BATCH = 16, each GPU will
 # see 2 images per batch
-_C.SOLVER.IMS_PER_BATCH = 256
+# _C.SOLVER.IMS_PER_BATCH = 256
+_C.SOLVER.IMS_PER_BATCH = 16
 
 # This is global, so if we have 8 GPUs and IMS_PER_BATCH = 16, each GPU will
 # see 2 images per batch
 _C.TEST = CN()
-_C.TEST.IMS_PER_BATCH = 256
+# _C.TEST.IMS_PER_BATCH = 256
+_C.TEST.IMS_PER_BATCH = 16
 _C.TEST.WEIGHT = ""
 
 # ---------------------------------------------------------------------------- #
 # Misc options
 # ---------------------------------------------------------------------------- #
-_C.OUTPUT_DIR = "/data/home/Shai/tmdb/exps/resnet18_500_750"
+_C.OUTPUT_DIR = "/media/ron/Data/google_time/exps/resnet18_224_224"
