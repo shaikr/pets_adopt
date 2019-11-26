@@ -31,11 +31,16 @@ class PetsDataset(Dataset):
         self.to_tensor = transforms.ToTensor()
 
         self.data_info = all_data_info.loc[(all_data_info['Quantity'] == 1) & (all_data_info['PhotoAmt'] > 0)]
+        self.data_info['binary_label'] = 0
+        self.data_info.loc[self.data_info[label_column] < 4, 'binary_label'] = 1  # Binary adopted / not
+
         # Column that contains the image paths
         self.image_arr = np.asarray(self.data_info['PetID'])
 
         # Second column is the labels
-        self.label_arr = torch.LongTensor(self.data_info[label_column])
+        # self.label_arr = torch.LongTensor(self.data_info[label_column])
+        self.label_arr = torch.LongTensor(self.data_info['binary_label'])
+
         # Third column is for an operation indicator
         # self.operation_arr = np.asarray(self.data_info.iloc[:, 2])
         # Calculate len
