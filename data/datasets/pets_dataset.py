@@ -35,7 +35,7 @@ class PetsDataset(Dataset):
         self.image_arr = np.asarray(self.data_info['PetID'])
 
         # Second column is the labels
-        self.label_arr = torch.LongTensor(self.data_info[label_column])
+        self.label_arr = np.asarray(self.data_info[label_column])
         # Third column is for an operation indicator
         # self.operation_arr = np.asarray(self.data_info.iloc[:, 2])
         # Calculate len
