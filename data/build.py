@@ -19,7 +19,12 @@ def build_dataset(transforms, is_train=True):
     #                                   label_column=r"vote_average", is_train=is_train)  # "revenue"
     datasets = PetsDataset(imgs_dir=r"/data/home/Shai/petfinder_data",
                            csv_path=r"/data/home/Shai/petfinder_data",
-                           label_column=r"AdoptionSpeed", is_train=is_train)                                   
+                           label_column=r"AdoptionSpeed", is_train=is_train)
+
+    # datasets = PetsDataset(imgs_dir=r"/data/home/Shai/Deep-Learning-Project-Template/data/basic_vectors",
+    #                        csv_path=r"/data/home/Shai/Deep-Learning-Project-Template/data/enrich_train.csv",
+    #                        label_column=r"AdoptionSpeed", is_train=is_train)
+
     # datasets = MNIST(root='./', train=is_train, transform=transforms, download=True)
     return datasets
 
