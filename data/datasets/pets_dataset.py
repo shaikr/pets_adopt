@@ -30,7 +30,7 @@ class PetsDataset(Dataset):
         # Transforms
         self.to_tensor = transforms.ToTensor()
 
-        self.data_info = all_data_info.loc[(all_data_info['Quantity'] == 1) & (all_data_info['PhotoAmt'] > 0)]
+        self.data_info = self.data_info.loc[(self.data_info['Quantity'] == 1) & (self.data_info['PhotoAmt'] > 0)]
         # Column that contains the image paths
         self.image_arr = np.asarray(self.data_info['PetID'])
 
