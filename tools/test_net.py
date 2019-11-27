@@ -20,35 +20,38 @@ from utils.logger import setup_logger
 
 
 def main():
-    parser = argparse.ArgumentParser(description="PyTorch Template MNIST Inference")
-    parser.add_argument(
-        "--config_file", default="", help="path to config file", type=str
-    )
-    parser.add_argument("opts", help="Modify config options using the command-line", default=None,
-                        nargs=argparse.REMAINDER)
+    # parser = argparse.ArgumentParser(description="PyTorch Template MNIST Inference")
+    # parser.add_argument(
+    #     "--config_file", default="", help="path to config file", type=str
+    # )
+    # parser.add_argument("opts", help="Modify config options using the command-line", default=None,
+    #                     nargs=argparse.REMAINDER)
+    #
+    # args = parser.parse_args()
+    #
+    # num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
+    #
+    # if args.config_file != "":
+    #     cfg.merge_from_file(args.config_file)
+    # cfg.merge_from_list(args.opts)
 
-    args = parser.parse_args()
-
-    num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
-
-    if args.config_file != "":
-        cfg.merge_from_file(args.config_file)
-    cfg.merge_from_list(args.opts)
+    num_gpus = 1
     cfg.freeze()
 
-    output_dir = cfg.OUTPUT_DIR
+    output_dir = cfg.OUTPUT_DIR + '_test'
     if output_dir and not os.path.exists(output_dir):
         mkdir(output_dir)
 
     logger = setup_logger("template_model", output_dir, 0)
     logger.info("Using {} GPUS".format(num_gpus))
-    logger.info(args)
 
-    if args.config_file != "":
-        logger.info("Loaded configuration file {}".format(args.config_file))
-        with open(args.config_file, 'r') as cf:
-            config_str = "\n" + cf.read()
-            logger.info(config_str)
+    # logger.info(args)
+
+    # if args.config_file != "":
+    #     logger.info("Loaded configuration file {}".format(args.config_file))
+    #     with open(args.config_file, 'r') as cf:
+    #         config_str = "\n" + cf.read()
+    #         logger.info(config_str)
     logger.info("Running with config:\n{}".format(cfg))
 
     model = build_model(cfg)

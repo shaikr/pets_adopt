@@ -18,7 +18,7 @@ def add_set_column_and_save(csv_path):
     set_list = np.zeros(len(clean_df))
     set_list[test_idxs] = 1
     clean_df['set'] = set_list
-    clean_df.to_csv(csv_path)
+    clean_df.to_csv(csv_path, index=False)
 
 
 if __name__ == '__main__':
