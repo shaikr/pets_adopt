@@ -24,7 +24,7 @@ import torch
 
 def train(cfg):
     model = build_model(cfg)
-    summary(model.cuda(), (3, 224,224))
+    # summary(model.cuda(), (3, 224,224))
     device = cfg.MODEL.DEVICE
 
     optimizer = make_optimizer(cfg, model)

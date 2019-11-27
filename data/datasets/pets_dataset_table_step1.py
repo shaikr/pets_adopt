@@ -10,7 +10,7 @@ from torchvision import transforms
 from torch.utils.data.dataset import Dataset  # For custom datasets
 
 
-class PetsDataset(Dataset):
+class PetsVectorDataset(Dataset):
     def __init__(self, train_imgs_dir, csv_path, label_column, is_train=True):
         """
         Args:
@@ -20,7 +20,7 @@ class PetsDataset(Dataset):
         """
         # Read the csv file
         self.imgs_dir = train_imgs_dir
-        all_data_info = pd.read_csv(csv_path)
+        all_data_info = pd.read_csv(csv_path, dtype={"PetID": str})
         if is_train:
             set_ind = 0
         else:
@@ -31,12 +31,12 @@ class PetsDataset(Dataset):
         # Transforms
         self.to_tensor = transforms.ToTensor()
 
-        self.data_info = all_data_info.loc[(all_data_info['Quantity'] == 1) & (all_data_info['PhotoAmt'] > 0)]
+        self.data_info = self.data_info.loc[(self.data_info['Quantity'] == 1) & (self.data_info['PhotoAmt'] > 0)]
         # Column that contains the image paths
         self.image_arr = np.asarray(self.data_info['PetID'])
 
         # Second column is the labels
-        self.label_arr = torch.LongTensor(self.data_info[label_column])
+        self.label_arr = np.asarray(self.data_info[label_column]).astype('float32')
         # Third column is for an operation indicator
         # self.operation_arr = np.asarray(self.data_info.iloc[:, 2])
         # Calculate len
@@ -49,7 +49,7 @@ class PetsDataset(Dataset):
         img_as_img = np.load(os.path.join(self.imgs_dir, single_image_name))
 
         # Transform image to tensor
-        img_as_tensor = self.to_tensor(img_as_img)
+        img_as_tensor = torch.from_numpy(img_as_img)
 
         # Get label(class) of the image based on the cropped pandas column
         single_image_label = self.label_arr[index]

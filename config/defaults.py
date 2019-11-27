@@ -92,9 +92,9 @@ _C.SOLVER.IMS_PER_BATCH = 16
 _C.TEST = CN()
 # _C.TEST.IMS_PER_BATCH = 256
 _C.TEST.IMS_PER_BATCH = 16
-_C.TEST.WEIGHT = ""
+_C.TEST.WEIGHT = "/home/bukchin/Downloads/resnet18_model_6.pth"
 
 # ---------------------------------------------------------------------------- #
 # Misc options
 # ---------------------------------------------------------------------------- #
-_C.OUTPUT_DIR = "/media/ron/Data/google_time/exps/resnet18_224_224"
+_C.OUTPUT_DIR = "/home/bukchin/google-time/exps/test"
