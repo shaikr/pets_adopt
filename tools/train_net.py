@@ -11,6 +11,8 @@ from os import mkdir
 from torchsummary import summary
 import torch.nn.functional as F
 
+from solver.build import make_scheduler
+
 sys.path.append('.')
 from config import cfg
 from data import make_data_loader
@@ -28,12 +30,15 @@ def train(cfg):
     device = cfg.MODEL.DEVICE
 
     optimizer = make_optimizer(cfg, model)
-    scheduler = None
+    scheduler = make_scheduler(cfg, optimizer)
 
     arguments = {}
 
     train_loader = make_data_loader(cfg, is_train=True)
     val_loader = make_data_loader(cfg, is_train=False)
+
+    def fixed_binary_cross_entropy(input, target):
+        return F.binary_cross_entropy_with_logits(input.squeeze(), target)
 
     do_train(
         cfg,
@@ -41,8 +46,10 @@ def train(cfg):
         train_loader,
         val_loader,
         optimizer,
-        None,
-        F.mse_loss,
+        scheduler,
+        # F.mse_loss,
+        # F.binary_cross_entropy,
+        fixed_binary_cross_entropy,
     )
 
 

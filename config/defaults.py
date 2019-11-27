@@ -65,6 +65,7 @@ _C.SOLVER.MAX_EPOCHS = 50
 
 _C.SOLVER.BASE_LR = 0.001
 _C.SOLVER.BIAS_LR_FACTOR = 2
+_C.LR_DECAY = 0.99
 
 _C.SOLVER.MOMENTUM = 0.9
 
@@ -78,23 +79,24 @@ _C.SOLVER.WARMUP_FACTOR = 1.0 / 3
 _C.SOLVER.WARMUP_ITERS = 500
 _C.SOLVER.WARMUP_METHOD = "linear"
 
-_C.SOLVER.CHECKPOINT_PERIOD = 10
+_C.SOLVER.CHECKPOINT_PERIOD = 1
 _C.SOLVER.LOG_PERIOD = 1
 
 # Number of images per batch
 # This is global, so if we have 8 GPUs and IMS_PER_BATCH = 16, each GPU will
 # see 2 images per batch
 # _C.SOLVER.IMS_PER_BATCH = 256
-_C.SOLVER.IMS_PER_BATCH = 16
+_C.SOLVER.IMS_PER_BATCH = 128
 
 # This is global, so if we have 8 GPUs and IMS_PER_BATCH = 16, each GPU will
 # see 2 images per batch
 _C.TEST = CN()
 # _C.TEST.IMS_PER_BATCH = 256
-_C.TEST.IMS_PER_BATCH = 16
-_C.TEST.WEIGHT = "/home/bukchin/Downloads/resnet18_model_6.pth"
+_C.TEST.IMS_PER_BATCH = 128
+_C.TEST.WEIGHT = "/media/ron/Data/google_time/exps/resnet18_224_224/resnet18_model_2.pth"  # with MSE
+_C.TEST.WEIGHT = "/media/ron/Data/google_time/exps/resnet18_224_224/resnet18_model_2.pth"  # with BCElogits
 
 # ---------------------------------------------------------------------------- #
 # Misc options
 # ---------------------------------------------------------------------------- #
-_C.OUTPUT_DIR = "/home/bukchin/google-time/exps/test"
+_C.OUTPUT_DIR = "/media/ron/Data/google_time/exps/resnet18_224_224"

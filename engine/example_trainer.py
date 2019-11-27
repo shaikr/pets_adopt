@@ -35,7 +35,7 @@ def do_train(
     evaluator = create_supervised_evaluator(model, metrics={
         # 'accuracy': Accuracy(),
         'ce_loss': Loss(loss_fn)}, device=device)
-    checkpointer = ModelCheckpoint(output_dir, 'resnet18', checkpoint_period, n_saved=10, require_empty=False)
+    checkpointer = ModelCheckpoint(output_dir, 'resnet18_bce', checkpoint_period, n_saved=10, require_empty=False)
     timer = Timer(average=True)
 
     trainer.add_event_handler(Events.EPOCH_COMPLETED, checkpointer, {'model': model,
@@ -60,8 +60,9 @@ def do_train(
     @trainer.on(Events.ITERATION_COMPLETED)
     def viz_iteration_loss(engine):
         iteration = engine.state.iteration - 1
-        viz.line(np.array([engine.state.metrics['avg_loss']]), np.array([iteration]), win='iter_loss', env='iter_loss',
-                 update='append')
+        viz.line(np.array([engine.state.metrics['avg_loss']]), np.array([iteration]), win='iter_loss',
+                 env='google-time',
+                 update='append', opts={'title': 'iter_loss'})
 
     @trainer.on(Events.EPOCH_COMPLETED)
     def log_training_results(engine):
@@ -70,6 +71,9 @@ def do_train(
         avg_loss = metrics['ce_loss']
         logger.info("Training Results - Epoch: {}  Avg Loss: {:.4f}"
                     .format(engine.state.epoch, avg_loss))
+        epoch = engine.state.epoch
+        viz.line(np.array([avg_loss]), np.array([epoch]), win='train_epoch_loss',
+                 env='google-time', update='append', name='train_epoch_loss', opts={'title': 'train_epoch_loss'})
 
     if val_loader is not None:
         @trainer.on(Events.EPOCH_COMPLETED)
@@ -80,6 +84,9 @@ def do_train(
             logger.info("Validation Results - Epoch: {} Avg Loss: {:.4f}"
                         .format(engine.state.epoch, avg_loss)
                         )
+            epoch = engine.state.epoch
+            viz.line(np.array([avg_loss]), np.array([epoch]), win='val_epoch_loss',
+                     env='google-time', update='append', name='val_epoch_loss', opts={'title': 'val_epoch_loss'})
 
     # adding handlers using `trainer.on` decorator API
     @trainer.on(Events.EPOCH_COMPLETED)
