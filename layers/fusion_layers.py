@@ -34,33 +34,134 @@ class ConcatModel(nn.Module):
         super(ConcatModel, self).__init__()
         self.vision_model = RegressionResnet18()
         self.fcs = nn.Sequential(
-            # nn.Linear(vision_feature_size + ds_feature_size, vision_feature_size + ds_feature_size),
-            # nn.Linear(vision_feature_size + ds_feature_size, vision_feature_size + ds_feature_size),
-            # nn.Linear(vision_feature_size + ds_feature_size, vision_feature_size + ds_feature_size)
+            nn.Linear(vision_feature_size + ds_feature_size, vision_feature_size + ds_feature_size),
+            nn.ReLU(),
+            nn.Linear(vision_feature_size + ds_feature_size, vision_feature_size + ds_feature_size),
+            nn.ReLU(),
+            nn.Linear(vision_feature_size + ds_feature_size, vision_feature_size + ds_feature_size),
+            nn.ReLU()
         )
         self.output = nn.Linear(vision_feature_size + ds_feature_size, 1)
         # torch.nn.init.xavier_uniform(self.fcs.weight)
-        # torch.nn.init.xavier_uniform(self.output.weight)
+        torch.nn.init.xavier_uniform(self.output.weight)
+        [torch.nn.init.xavier_uniform(layer.weight) for layer in list(self.fcs.modules()) if type(layer) == nn.Linear]
 
     def forward(self, vectors):
         img, ds_vector = vectors
         x = self.vision_model(img)
         x = torch.cat((x, ds_vector.float()), dim=1)
-        x=self.fcs(x)
-        x=self.output(x)
+        x = self.fcs(x)
+        x = self.output(x)
         return x
 
 
 class DenseFusionModel(nn.Module):
-    def __init__(self, ds_vector_size):
+    def __init__(self, vision_feature_size, ds_feature_size):
         super(DenseFusionModel, self).__init__()
         self.vision_model = RegressionResnet18()
-        self.fc = nn.Linear(self.vision_model.out_features, ds_vector_size)
+        self.fusion = nn.Linear(vision_feature_size, ds_feature_size)
+        self.fcs = nn.Sequential(
+            # nn.Linear(ds_feature_size, ds_feature_size),
+            # nn.ReLU(),
+            # nn.Linear(ds_feature_size, ds_feature_size),
+            # nn.ReLU(),
+            # nn.Linear(ds_feature_size, ds_feature_size),
+            # nn.ReLU()
+        )
+        self.output = nn.Linear(ds_feature_size, 1)
+        torch.nn.init.xavier_uniform(self.output.weight)
+        torch.nn.init.xavier_uniform(self.fusion.weight)
+        [torch.nn.init.xavier_uniform(layer.weight) for layer in list(self.fcs.modules()) if type(layer) == nn.Linear]
 
-    def forward(self, img, ds_vector):
+    def forward(self, vectors):
+        img, ds_vector = vectors
         x = self.vision_model(img)
-        x = self.fc(x)
+        x = self.fusion(x)
         x = x + ds_vector.float()
+        x = self.fcs(x)
+        x = self.output(x)
         return x
 
-        # self.fc =
+
+class Test(nn.Module):
+    def __init__(self, vision_feature_size, ds_feature_size):
+        super(Test, self).__init__()
+        self.vision_model = RegressionResnet18()
+        self.fusion = nn.Linear(vision_feature_size, ds_feature_size)
+        # self.ds_embedding_network = RegressionResnet18()
+        self.fcs = nn.Sequential(
+            nn.Linear(ds_feature_size, ds_feature_size),
+            nn.ReLU(),
+            nn.Linear(ds_feature_size, ds_feature_size),
+            nn.ReLU(),
+            nn.Linear(ds_feature_size, vision_feature_size),
+            nn.ReLU()
+        )
+        self.output = nn.Linear(vision_feature_size, 1)
+        # torch.nn.init.xavier_uniform(self.output.weight)
+        # torch.nn.init.xavier_uniform(self.fusion.weight)
+        [torch.nn.init.xavier_uniform(layer.weight) for layer in list(self.fcs.modules()) if type(layer) == nn.Linear]
+
+    def forward(self, vectors):
+        img, ds_vector = vectors
+        ds_vector = ds_vector.float()
+        x = self.vision_model(img)
+        x_tag = self.fcs(ds_vector)
+        # x = self.fusion(x)
+        x = x + x_tag
+        # x = self.fcs(x)
+        x = self.output(x)
+        return x
+
+
+class Test2(nn.Module):
+    def __init__(self, vision_feature_size, ds_feature_size):
+        super(Test2, self).__init__()
+        self.vision_model = RegressionResnet18()
+        self.fusion = nn.Linear(vision_feature_size, ds_feature_size)
+        # self.ds_embedding_network = RegressionResnet18()
+        self.fcs1 = nn.Sequential(
+            nn.Linear(ds_feature_size, ds_feature_size),
+            nn.ReLU(),
+            nn.Linear(ds_feature_size, ds_feature_size),
+            nn.ReLU(),
+            nn.Linear(ds_feature_size, vision_feature_size),
+            nn.ReLU()
+        )
+
+        self.fcs2 = nn.Sequential(
+            nn.Linear(vision_feature_size, vision_feature_size),
+            nn.ReLU(),
+            nn.Linear(vision_feature_size, vision_feature_size),
+            nn.ReLU()
+        )
+
+        self.output = nn.Linear(vision_feature_size, 1)
+        # torch.nn.init.xavier_uniform(self.output.weight)
+        # torch.nn.init.xavier_uniform(self.fusion.weight)
+        [torch.nn.init.xavier_uniform(layer.weight) for layer in list(self.fcs1.modules()) if type(layer) == nn.Linear]
+        [torch.nn.init.xavier_uniform(layer.weight) for layer in list(self.fcs2.modules()) if type(layer) == nn.Linear]
+
+    def forward(self, vectors):
+        img, ds_vector = vectors
+        ds_vector = ds_vector.float()
+        x = self.vision_model(img)
+        x_tag = self.fcs1(ds_vector)
+        x = x + x_tag
+        x = self.fcs2(x)
+        x = self.output(x)
+        return x
+
+
+class IgnoreNet(nn.Module):
+    def __init__(self, vision_feature_size, ds_feature_size):
+        super(IgnoreNet, self).__init__()
+        self.vision_model = RegressionResnet18()
+        self.output = nn.Linear(vision_feature_size, 1)
+        # torch.nn.init.xavier_uniform(self.output.weight)
+
+    def forward(self, vectors):
+        img, ds_vector = vectors
+        x = self.vision_model(img)
+        x = self.output(x)
+        return x
