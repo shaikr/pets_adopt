@@ -12,7 +12,7 @@ def get_train_test_idxs(df, train_frac=0.8):
 
 
 def add_set_column_and_save(csv_path):
-    df = pd.read_csv(csv_path)
+    df = pd.read_csv(csv_path, dtype={"PetID": str})
     clean_df = df[df['Quantity'] == 1]
     train_idxs, test_idxs = get_train_test_idxs(clean_df)
     set_list = np.zeros(len(clean_df))

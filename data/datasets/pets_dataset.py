@@ -19,7 +19,7 @@ class PetsDataset(Dataset):
         """
         # Read the csv file
         self.imgs_dir = train_imgs_dir
-        all_data_info = pd.read_csv(csv_path)
+        all_data_info = pd.read_csv(csv_path, dtype={"PetID": str})
         if is_train:
             set_ind = 0
         else:
@@ -32,10 +32,10 @@ class PetsDataset(Dataset):
 
         self.data_info = self.data_info.loc[(self.data_info['Quantity'] == 1) & (self.data_info['PhotoAmt'] > 0)]
         # Column that contains the image paths
-        self.image_arr = np.asarray(self.data_info['PetID'])
+        self.image_arr = np.asarray(self.data_info['PetID']).astype(str)
 
         # Second column is the labels
-        self.label_arr = np.asarray(self.data_info[label_column])
+        self.label_arr = np.asarray(self.data_info[label_column]).astype('float32')
         # Third column is for an operation indicator
         # self.operation_arr = np.asarray(self.data_info.iloc[:, 2])
         # Calculate len
@@ -43,9 +43,17 @@ class PetsDataset(Dataset):
 
     def __getitem__(self, index):
         # Get image name from the pandas df
-        single_image_name = self.image_arr[index] + '-1.jpg'
+        try:
+            single_image_name = self.image_arr[index] + '-1.jpg'
+        except:
+            pass
+        try:
+            img_as_img = Image.open(os.path.join(self.imgs_dir, single_image_name))
+        except FileNotFoundError as e:
+            single_image_name = '0' + self.image_arr[index] + '-1.jpg'
+            img_as_img = Image.open(os.path.join(self.imgs_dir, single_image_name))
+
         # Open image
-        img_as_img = Image.open(os.path.join(self.imgs_dir, single_image_name))
 
         # If not RGB - convert
         if img_as_img.mode != 'RGB':

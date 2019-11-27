@@ -10,7 +10,8 @@ from ignite.engine import Events, create_supervised_trainer, create_supervised_e
 from ignite.handlers import ModelCheckpoint, Timer
 from ignite.metrics import Accuracy, Loss, RunningAverage, mean_squared_error
 from ignite.contrib.metrics.regression import manhattan_distance
-
+import numpy as np
+from ignite.contrib.handlers.visdom_logger import VisdomLogger
 
 def do_train(
         cfg,
@@ -48,8 +49,17 @@ def do_train(
         iter = (engine.state.iteration - 1) % len(train_loader) + 1
 
         if iter % log_period == 0:
-            logger.info("Epoch[{}] Iteration[{}/{}] Loss: {:.2f}"
+            logger.info("Epoch[{}] Iteration[{}/{}] Loss: {:.4f}"
                         .format(engine.state.epoch, iter, len(train_loader), engine.state.metrics['avg_loss']))
+
+    from visdom import Visdom
+    viz = Visdom()
+
+    @trainer.on(Events.ITERATION_COMPLETED)
+    def viz_iteration_loss(engine):
+        iteration = engine.state.iteration - 1
+        viz.line(np.array([engine.state.metrics['avg_loss']]), np.array([iteration]), win='iter_loss', env='iter_loss',
+                 update='append')
 
     @trainer.on(Events.EPOCH_COMPLETED)
     def log_training_results(engine):
