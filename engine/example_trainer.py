@@ -61,7 +61,7 @@ def do_train(
     def viz_iteration_loss(engine):
         iteration = engine.state.iteration - 1
         viz.line(np.array([engine.state.metrics['avg_loss']]), np.array([iteration]), win='iter_loss',
-                 env='google-time',
+                 env='main',
                  update='append', opts={'title': 'iter_loss'})
 
     @trainer.on(Events.EPOCH_COMPLETED)
@@ -73,7 +73,7 @@ def do_train(
                     .format(engine.state.epoch, avg_loss))
         epoch = engine.state.epoch
         viz.line(np.array([avg_loss]), np.array([epoch]), win='train_epoch_loss',
-                 env='google-time', update='append', name='train_epoch_loss', opts={'title': 'train_epoch_loss'})
+                 env='main', update='append', name='train_epoch_loss', opts={'title': 'train_epoch_loss'})
 
     if val_loader is not None:
         @trainer.on(Events.EPOCH_COMPLETED)
@@ -86,7 +86,7 @@ def do_train(
                         )
             epoch = engine.state.epoch
             viz.line(np.array([avg_loss]), np.array([epoch]), win='val_epoch_loss',
-                     env='google-time', update='append', name='val_epoch_loss', opts={'title': 'val_epoch_loss'})
+                     env='main', update='append', name='val_epoch_loss', opts={'title': 'val_epoch_loss'})
 
     # adding handlers using `trainer.on` decorator API
     @trainer.on(Events.EPOCH_COMPLETED)

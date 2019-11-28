@@ -47,8 +47,6 @@ def train(cfg):
         val_loader,
         optimizer,
         scheduler,
-        # F.mse_loss,
-        # F.binary_cross_entropy,
         fixed_binary_cross_entropy,
     )
 

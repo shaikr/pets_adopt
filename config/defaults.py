@@ -59,13 +59,13 @@ _C.DATALOADER.NUM_WORKERS = 8
 # Solver
 # ---------------------------------------------------------------------------- #
 _C.SOLVER = CN()
-_C.SOLVER.OPTIMIZER_NAME = "SGD"
+_C.SOLVER.OPTIMIZER_NAME = "Adam"
 
 _C.SOLVER.MAX_EPOCHS = 50
 
-_C.SOLVER.BASE_LR = 0.001
+_C.SOLVER.BASE_LR = 1e-5
 _C.SOLVER.BIAS_LR_FACTOR = 2
-_C.LR_DECAY = 0.99
+_C.LR_DECAY = 0.95
 
 _C.SOLVER.MOMENTUM = 0.9
 
@@ -99,4 +99,4 @@ _C.TEST.WEIGHT = "/media/ron/Data/google_time/exps/resnet18_224_224/resnet18_mod
 # ---------------------------------------------------------------------------- #
 # Misc options
 # ---------------------------------------------------------------------------- #
-_C.OUTPUT_DIR = "/media/ron/Data/google_time/exps/resnet18_224_224"
+_C.OUTPUT_DIR = "/home/bukchin/google-time/exps/test-new-vectors"

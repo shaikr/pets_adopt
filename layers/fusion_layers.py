@@ -8,7 +8,7 @@ class RegressionResnet18(nn.Module):
     def __init__(self):
         super(RegressionResnet18, self).__init__()
         self.features = nn.Sequential(
-            *(list(resnet18(pretrained=True, progress=True).children())[:-1])
+            *(list(resnet18(pretrained=False, progress=True).children())[:-1])
         )
         # self.model = resnet18(pretrained=True, progress=True)
         # self.set_parameter_requires_grad(self.model, False)
@@ -34,12 +34,12 @@ class ConcatModel(nn.Module):
         super(ConcatModel, self).__init__()
         self.vision_model = RegressionResnet18()
         self.fcs = nn.Sequential(
-            nn.Linear(vision_feature_size + ds_feature_size, vision_feature_size + ds_feature_size),
-            nn.ReLU(),
-            nn.Linear(vision_feature_size + ds_feature_size, vision_feature_size + ds_feature_size),
-            nn.ReLU(),
-            nn.Linear(vision_feature_size + ds_feature_size, vision_feature_size + ds_feature_size),
-            nn.ReLU()
+        #     nn.Linear(vision_feature_size + ds_feature_size, vision_feature_size + ds_feature_size),
+        #     nn.ReLU(),
+        #     nn.Linear(vision_feature_size + ds_feature_size, vision_feature_size + ds_feature_size),
+        #     nn.ReLU(),
+        #     nn.Linear(vision_feature_size + ds_feature_size, vision_feature_size + ds_feature_size),
+        #     nn.ReLU()
         )
         self.output = nn.Linear(vision_feature_size + ds_feature_size, 1)
         # torch.nn.init.xavier_uniform(self.fcs.weight)
