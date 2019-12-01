@@ -86,17 +86,19 @@ _C.SOLVER.LOG_PERIOD = 1
 # This is global, so if we have 8 GPUs and IMS_PER_BATCH = 16, each GPU will
 # see 2 images per batch
 # _C.SOLVER.IMS_PER_BATCH = 256
-_C.SOLVER.IMS_PER_BATCH = 128
+_C.SOLVER.IMS_PER_BATCH = 16
 
 # This is global, so if we have 8 GPUs and IMS_PER_BATCH = 16, each GPU will
 # see 2 images per batch
 _C.TEST = CN()
 # _C.TEST.IMS_PER_BATCH = 256
-_C.TEST.IMS_PER_BATCH = 128
+_C.TEST.IMS_PER_BATCH = 16
 _C.TEST.WEIGHT = "/media/ron/Data/google_time/exps/resnet18_224_224/resnet18_model_2.pth"  # with MSE
 _C.TEST.WEIGHT = "/media/ron/Data/google_time/exps/resnet18_224_224/resnet18_model_2.pth"  # with BCElogits
 
 # ---------------------------------------------------------------------------- #
 # Misc options
 # ---------------------------------------------------------------------------- #
-_C.OUTPUT_DIR = "/home/bukchin/google-time/exps/test-new-vectors"
+# _C.OUTPUT_DIR = "/home/bukchin/google-time/exps/test-new-vectors"
+_C.OUTPUT_DIR = "/media/ron/Data/google_time/exps/DenseFusionModel"
+_C.THRESHOLD = 0.5

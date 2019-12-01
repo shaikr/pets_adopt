@@ -21,7 +21,7 @@ def build_dataset(transforms, is_train=True):
     # datasets = PetsDataset(train_imgs_dir=r"/data/home/Shai/petfinder_data/train_images",
     #                        csv_path=r"../data/train.csv",
     #                        label_column=r"AdoptionSpeed", is_train=is_train)
-    datasets = UnifiedDataset(train_imgs_dir=r"/home/Shai/petfinder_data/train_images",
+    datasets = UnifiedDataset(train_imgs_dir=r"/media/ron/Data/google_time/petfinder/train_images",
                               vectors_dir="../data/cat_embedded_vectors",
                               csv_path=r"../data/train.csv",
                               label_column=r"BinaryLabel", is_train=is_train)

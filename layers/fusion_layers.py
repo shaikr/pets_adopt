@@ -83,9 +83,9 @@ class DenseFusionModel(nn.Module):
         return x
 
 
-class Test(nn.Module):
+class DenseBeforeFusion(nn.Module):
     def __init__(self, vision_feature_size, ds_feature_size):
-        super(Test, self).__init__()
+        super(DenseBeforeFusion, self).__init__()
         self.vision_model = RegressionResnet18()
         self.fusion = nn.Linear(vision_feature_size, ds_feature_size)
         # self.ds_embedding_network = RegressionResnet18()
@@ -114,9 +114,9 @@ class Test(nn.Module):
         return x
 
 
-class Test2(nn.Module):
+class DenseBeforeAndAfterFusion(nn.Module):
     def __init__(self, vision_feature_size, ds_feature_size):
-        super(Test2, self).__init__()
+        super(DenseBeforeAndAfterFusion, self).__init__()
         self.vision_model = RegressionResnet18()
         self.fusion = nn.Linear(vision_feature_size, ds_feature_size)
         # self.ds_embedding_network = RegressionResnet18()
