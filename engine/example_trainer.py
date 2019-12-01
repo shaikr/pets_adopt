@@ -40,7 +40,7 @@ def do_train(
         'precision': Precision(cfg.THRESHOLD),
         'recall': Recall(cfg.THRESHOLD),
         'ce_loss': Loss(loss_fn)}, device=device)
-    checkpointer = ModelCheckpoint(output_dir, 'resnet18_bce', checkpoint_period, n_saved=10, require_empty=False)
+    checkpointer = ModelCheckpoint(output_dir, 'resnet18_bce', checkpoint_period, n_saved=1000, require_empty=False)
     timer = Timer(average=True)
 
     trainer.add_event_handler(Events.EPOCH_COMPLETED, checkpointer, {'model': model,
@@ -79,14 +79,15 @@ def do_train(
         logger.info("Training Results - Epoch: {}  Avg Loss: {:.4f}   Recall: {:.4f}   Precision: {:.4f}"
                     .format(engine.state.epoch, avg_loss, recall, precision))
         epoch = engine.state.epoch
+        env_name = 'end_task_train'
         viz.line(np.array([avg_loss]), np.array([epoch]), win='train_epoch_loss',
-                 env='DenseFusionModel', update='append', name='train_epoch_loss', opts={'title': 'train_epoch_loss'})
+                 env=env_name, update='append', name='train_epoch_loss', opts={'title': 'train_epoch_loss'})
         viz.line(np.array([recall]), np.array([epoch]), win='train_recall',
-                 env='DenseFusionModel', update='append', name='train_recall', opts={'title': 'train_epoch_recall'})
+                 env=env_name, update='append', name='train_recall', opts={'title': 'train_epoch_recall'})
         viz.line(np.array([precision]), np.array([epoch]), win='train_precision',
-                 env='DenseFusionModel', update='append', name='train_precision', opts={'title': 'train_epoch_precision'})
+                 env=env_name, update='append', name='train_precision', opts={'title': 'train_epoch_precision'})
         viz.line(np.array([precision]), np.array([recall]), win='train_ROC',
-                 env='DenseFusionModel', update='append', name='train_ROC', opts={'title': 'train_ROC'})
+                 env=env_name, update='append', name='train_ROC', opts={'title': 'train_ROC'})
 
     if val_loader is not None:
         @trainer.on(Events.EPOCH_COMPLETED)

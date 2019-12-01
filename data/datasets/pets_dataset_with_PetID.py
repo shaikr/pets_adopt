@@ -68,7 +68,7 @@ class PetsDatasetPetID(Dataset):
         # Get label(class) of the image based on the cropped pandas column
         single_image_label = self.label_arr[index]
 
-        pet_id = single_image_name.replace('.jpg', '')
+        pet_id = single_image_name.replace('-1.jpg', '')
         return img_as_tensor, single_image_label, pet_id
 
     def __len__(self):

@@ -24,6 +24,7 @@ from utils.logger import setup_logger
 
 import torch
 
+
 def train(cfg):
     model = build_model(cfg)
     # summary(model.cuda(), (3, 224,224))

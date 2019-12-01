@@ -11,6 +11,7 @@ from os import mkdir
 
 import torch
 import numpy as np
+import tqdm
 from torch import nn
 from torchvision.models import resnet18
 
@@ -32,7 +33,7 @@ def resnet18_embedding_model_forward(model, x):
 def embedding(cfg, model, val_loader, logger, output_dir):
     device = cfg.MODEL.DEVICE
     logger.info("Start inferencing")
-    for i, batch in enumerate(val_loader):
+    for i, batch in tqdm.tqdm(enumerate(val_loader)):
         images, labels, pet_ids = batch
         images.to(device)
         with torch.no_grad():
@@ -56,7 +57,8 @@ def main():
     model = build_model(cfg)
     # model.load_state_dict(torch.load(cfg.TEST.WEIGHT))
     print('imageneto')
-    val_loader = make_data_loader(cfg, is_train=False)
+    # val_loader = make_data_loader(cfg, is_train=False, with_pet_ids=True)
+    val_loader = make_data_loader(cfg, is_train=True, with_pet_ids=True, all_data=True)
 
     embedding(cfg, model, val_loader, logger, output_dir)
 
