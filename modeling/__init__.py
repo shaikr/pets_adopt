@@ -12,13 +12,13 @@ from torchvision.models.resnet import resnet152, resnet18
 
 def build_model(cfg):
     # model = ResNet18(1) #cfg.MODEL.NUM_CLASSES)
-    # model_ft = resnet18(pretrained=True, progress=True)
+    model_ft = resnet18(pretrained=True, progress=True)
     # set_parameter_requires_grad(model_ft, False)
     # num_features = model_ft.fc.in_features
     # model_ft.fc = nn.Linear(num_features, 1)
     # model_ft=ConcatModel(512,142)
     # model_ft = DenseBeforeFusion(512, 142)
-    model_ft=DenseFusionModel(512,142)
+    # model_ft=DenseFusionModel(512,142)
     # model_ft = DenseBeforeAndAfterFusion(512, 142)
     # model_ft = IgnoreNet(512,142)
     # model= resnet152(pretrained=True, progress=True, num_classes=1)

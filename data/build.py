@@ -6,6 +6,7 @@
 
 from torch.utils import data
 
+from data.datasets.pets_dataset_with_PetID import PetsDatasetPetID
 from data.datasets.unified_dataset import UnifiedDataset
 from .datasets.mnist import MNIST
 from .datasets.im_tmdb import CustomDatasetFromImages
@@ -21,10 +22,13 @@ def build_dataset(transforms, is_train=True):
     # datasets = PetsDataset(train_imgs_dir=r"/data/home/Shai/petfinder_data/train_images",
     #                        csv_path=r"../data/train.csv",
     #                        label_column=r"AdoptionSpeed", is_train=is_train)
-    datasets = UnifiedDataset(train_imgs_dir=r"/media/ron/Data/google_time/petfinder/train_images",
-                              vectors_dir="../data/cat_embedded_vectors",
-                              csv_path=r"../data/train.csv",
-                              label_column=r"BinaryLabel", is_train=is_train)
+    # datasets = UnifiedDataset(train_imgs_dir=r"/media/ron/Data/google_time/petfinder/train_images",
+    #                           vectors_dir="../data/cat_embedded_vectors",
+    #                           csv_path=r"../data/train.csv",
+    #                           label_column=r"BinaryLabel", is_train=is_train)
+    datasets = PetsDatasetPetID(train_imgs_dir=r"/media/ron/Data/google_time/petfinder/train_images",
+                                csv_path=r"../data/train.csv",
+                                label_column=r"BinaryLabel", is_train=is_train)
     # datasets = MNIST(root='./', train=is_train, transform=transforms, download=True)
     return datasets
 

@@ -10,6 +10,9 @@ import sys
 from os import mkdir
 
 import torch
+import numpy as np
+from torch import nn
+from torchvision.models import resnet18
 
 sys.path.append('.')
 from config import cfg
@@ -21,24 +24,21 @@ import torch.nn.functional as F
 
 
 def resnet18_embedding_model_forward(model, x):
-    out = F.relu(model.bn1(model.conv1(x)))
-    out = model.layer1(out)
-    out = model.layer2(out)
-    out = model.layer3(out)
-    out = F.avg_pool2d(out, 8)
-    out = out.view(out.size(0), -1)
+    embedding_model = nn.Sequential(*(list(model.children())[:-1]))
+    out = embedding_model(x)
     return out
 
 
-def embedding(cfg, model, val_loader, logger):
+def embedding(cfg, model, val_loader, logger, output_dir):
     device = cfg.MODEL.DEVICE
     logger.info("Start inferencing")
     for i, batch in enumerate(val_loader):
-        images, labels = batch
+        images, labels, pet_ids = batch
         images.to(device)
         with torch.no_grad():
             embeddings = resnet18_embedding_model_forward(model, images)
-        pass
+            for pet_id, vec in zip(pet_ids, embeddings):
+                np.save(os.path.join(output_dir, pet_id + '.npy'), vec.squeeze().numpy())
 
 
 def main():
@@ -54,10 +54,11 @@ def main():
     logger.info("Running with config:\n{}".format(cfg))
 
     model = build_model(cfg)
-    model.load_state_dict(torch.load(cfg.TEST.WEIGHT))
+    # model.load_state_dict(torch.load(cfg.TEST.WEIGHT))
+    print('imageneto')
     val_loader = make_data_loader(cfg, is_train=False)
 
-    embedding(cfg, model, val_loader, logger)
+    embedding(cfg, model, val_loader, logger, output_dir)
 
 
 if __name__ == '__main__':
