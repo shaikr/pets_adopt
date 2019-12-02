@@ -35,6 +35,7 @@ class PetsDataset(Dataset):
         self.image_arr = np.asarray(self.data_info['PetID']).astype(str)
 
         # Second column is the labels
+        self.label_to_idx = sorted(self.data_info[label_column].unique())
         self.label_arr = np.asarray(self.data_info[label_column]).astype('float32')
         # Third column is for an operation indicator
         # self.operation_arr = np.asarray(self.data_info.iloc[:, 2])
@@ -67,6 +68,7 @@ class PetsDataset(Dataset):
 
         # Get label(class) of the image based on the cropped pandas column
         single_image_label = self.label_arr[index]
+        single_image_label = np.where(np.array(self.label_to_idx) == int(single_image_label))[0]
 
         return img_as_tensor, single_image_label
 

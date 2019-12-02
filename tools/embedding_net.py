@@ -46,7 +46,7 @@ def main():
     num_gpus = 1
     cfg.freeze()
 
-    output_dir = cfg.OUTPUT_DIR + '_test'
+    output_dir = cfg.OUTPUT_DIR
     if output_dir and not os.path.exists(output_dir):
         mkdir(output_dir)
 
@@ -55,8 +55,8 @@ def main():
     logger.info("Running with config:\n{}".format(cfg))
 
     model = build_model(cfg)
-    # model.load_state_dict(torch.load(cfg.TEST.WEIGHT))
-    print('imageneto')
+    model.load_state_dict(torch.load(cfg.TEST.WEIGHT))
+    print('trained_on_end_task')
     # val_loader = make_data_loader(cfg, is_train=False, with_pet_ids=True)
     val_loader = make_data_loader(cfg, is_train=True, with_pet_ids=True, all_data=True)
 

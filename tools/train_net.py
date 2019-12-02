@@ -23,6 +23,7 @@ from solver import make_optimizer
 from utils.logger import setup_logger
 
 import torch
+import numpy as np
 
 
 def train(cfg):
@@ -35,11 +36,57 @@ def train(cfg):
 
     arguments = {}
 
-    train_loader = make_data_loader(cfg, is_train=True)
-    val_loader = make_data_loader(cfg, is_train=False)
+    label = 'BinaryLabel'
+
+    train_loader = make_data_loader(cfg, is_train=True, label_column=label)
+    val_loader = make_data_loader(cfg, is_train=False, label_column=label)
 
     def fixed_binary_cross_entropy(input, target):
         return F.binary_cross_entropy_with_logits(input.squeeze(), target)
+
+    def fixed_cross_entropy(input, target):
+        return F.cross_entropy(input, target.squeeze())
+
+    def CB_loss(logits, labels, samples_per_cls=[2377, 6689], no_of_classes=2, loss_type='sigmoid', beta=0.999):
+        """Compute the Class Balanced Loss between `logits` and the ground truth `labels`.
+        Class Balanced Loss: ((1-beta)/(1-beta^n))*Loss(labels, logits)
+        where Loss is one of the standard losses used for Neural Networks.
+        Args:
+          labels: A int tensor of size [batch].
+          logits: A float tensor of size [batch, no_of_classes].
+          samples_per_cls: A python list of size [no_of_classes].
+          no_of_classes: total number of classes. int
+          loss_type: string. One of "sigmoid", "focal", "softmax".
+          beta: float. Hyperparameter for Class balanced loss.
+          gamma: float. Hyperparameter for Focal loss.
+        Returns:
+          cb_loss: A float tensor representing class balanced loss
+        """
+        effective_num = 1.0 - np.power(beta, samples_per_cls)
+        weights = (1.0 - beta) / np.array(effective_num)
+        weights = weights / np.sum(weights) * no_of_classes
+
+        labels_one_hot = F.one_hot(labels.squeeze(), no_of_classes).float()
+
+        weights = torch.tensor(weights).float()
+        weights = weights.unsqueeze(0)
+        weights = weights.repeat(labels_one_hot.shape[0], 1) * labels_one_hot.cpu()
+        weights = weights.sum(1)
+        weights = weights.unsqueeze(1)
+        weights = weights.repeat(1, no_of_classes)
+        weights = weights.cuda()
+
+        if loss_type == "sigmoid":
+            cb_loss = F.binary_cross_entropy_with_logits(input=logits.squeeze(), target=labels_one_hot, weight=weights)
+        elif loss_type == "softmax":
+            pred = logits.squeeze().softmax(dim=1)
+            cb_loss = F.binary_cross_entropy(input=pred, target=labels_one_hot, weight=weights)
+        else:
+            raise
+        return cb_loss
+
+    # loss_fn = fixed_cross_entropy
+    loss_fn = CB_loss
 
     do_train(
         cfg,
@@ -48,7 +95,7 @@ def train(cfg):
         val_loader,
         optimizer,
         scheduler,
-        fixed_binary_cross_entropy,
+        loss_fn,
     )
 
 

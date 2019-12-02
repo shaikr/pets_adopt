@@ -15,7 +15,7 @@ from .datasets.pets_dataset import PetsDataset
 from .transforms import build_transforms
 
 
-def build_dataset(transforms, is_train=True, with_pet_ids=False, all_data=False):
+def build_dataset(transforms, is_train=True, with_pet_ids=False, all_data=False, label_column='BinaryLabel'):
     # TODO - currently, no transforms
     # datasets = CustomDatasetFromImages(imgs_dir=r'/data/home/Shai/tmdb/input/posters',
     #                                   csv_path=r"/data/home/Shai/tmdb/input/movies_metadata_with_length_3.csv",
@@ -31,27 +31,27 @@ def build_dataset(transforms, is_train=True, with_pet_ids=False, all_data=False)
         if not all_data:
             datasets = PetsDatasetPetID(train_imgs_dir=r"/media/ron/Data/google_time/petfinder/train_images",
                                         csv_path=r"../data/train.csv",
-                                        label_column=r"BinaryLabel", is_train=is_train)
+                                        label_column=label_column, is_train=is_train)
         else:
             datasets = ConcatDataset(
                 [PetsDatasetPetID(train_imgs_dir=r"/media/ron/Data/google_time/petfinder/train_images",
                                   csv_path=r"../data/train.csv",
-                                  label_column=r"BinaryLabel", is_train=set) for set in [False, True]])
+                                  label_column=label_column, is_train=set) for set in [False, True]])
     else:
         if not all_data:
             datasets = PetsDataset(train_imgs_dir=r"/media/ron/Data/google_time/petfinder/train_images",
-                                        csv_path=r"../data/train.csv",
-                                        label_column=r"BinaryLabel", is_train=is_train)
+                                   csv_path=r"../data/train.csv",
+                                   label_column=label_column, is_train=is_train)
         else:
             datasets = ConcatDataset(
                 [PetsDataset(train_imgs_dir=r"/media/ron/Data/google_time/petfinder/train_images",
-                                  csv_path=r"../data/train.csv",
-                                  label_column=r"BinaryLabel", is_train=set) for set in [False, True]])
+                             csv_path=r"../data/train.csv",
+                             label_column=label_column, is_train=set) for set in [False, True]])
     # datasets = MNIST(root='./', train=is_train, transform=transforms, download=True)
     return datasets
 
 
-def make_data_loader(cfg, is_train=True, with_pet_ids=False, all_data=False):
+def make_data_loader(cfg, is_train=True, with_pet_ids=False, all_data=False, label_column='BinaryLabel'):
     if is_train:
         batch_size = cfg.SOLVER.IMS_PER_BATCH
         shuffle = True
@@ -59,7 +59,7 @@ def make_data_loader(cfg, is_train=True, with_pet_ids=False, all_data=False):
         batch_size = cfg.TEST.IMS_PER_BATCH
         shuffle = False
     transforms = build_transforms(cfg, is_train)
-    datasets = build_dataset(transforms, is_train, with_pet_ids, all_data)
+    datasets = build_dataset(transforms, is_train, with_pet_ids, all_data, label_column=label_column)
 
     num_workers = cfg.DATALOADER.NUM_WORKERS
     data_loader = data.DataLoader(

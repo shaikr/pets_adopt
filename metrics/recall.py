@@ -25,9 +25,10 @@ class Recall(_BaseClassification):
 
     def update(self, output):
         y_pred_raw, y = output
-        y_pred = (torch.exp(y_pred_raw) / (torch.exp(y_pred_raw) + 1)) > self.threshold
-        self.false_negatives += torch.all(torch.cat([(y_pred == 0), (y == 1)[:, None]], axis=1), axis=1).sum()
-        self.true_positives += torch.all(torch.cat([(y_pred == 1), (y == 1)[:, None]], axis=1), axis=1).sum()
+        y = y.squeeze()
+        y_pred = torch.argmax(torch.exp(y_pred_raw) / (torch.exp(y_pred_raw) + 1), dim=1)
+        self.false_negatives += torch.all(torch.cat([(y_pred == 0)[:, None], (y == 1)[:, None]], axis=1), axis=1).sum()
+        self.true_positives += torch.all(torch.cat([(y_pred == 1)[:, None], (y == 1)[:, None]], axis=1), axis=1).sum()
 
     def compute(self):
         if self.false_negatives + self.true_positives == 0:

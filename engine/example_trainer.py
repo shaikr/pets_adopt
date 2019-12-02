@@ -51,6 +51,8 @@ def do_train(
 
     RunningAverage(output_transform=lambda x: x).attach(trainer, 'avg_loss')
 
+    ENV_NAME = 'ClassBalanced'
+
     @trainer.on(Events.ITERATION_COMPLETED)
     def log_training_loss(engine):
         iter = (engine.state.iteration - 1) % len(train_loader) + 1
@@ -66,7 +68,7 @@ def do_train(
     def viz_iteration_loss(engine):
         iteration = engine.state.iteration - 1
         viz.line(np.array([engine.state.metrics['avg_loss']]), np.array([iteration]), win='iter_loss',
-                 env='DenseFusionModel',
+                 env=ENV_NAME,
                  update='append', opts={'title': 'iter_loss'})
 
     @trainer.on(Events.EPOCH_COMPLETED)
@@ -76,10 +78,12 @@ def do_train(
         avg_loss = metrics['ce_loss']
         recall = metrics['recall']
         precision = metrics['precision']
+        # logger.info("Training Results - Epoch: {}  Avg Loss: {:.4f}"
+        #             .format(engine.state.epoch, avg_loss))
         logger.info("Training Results - Epoch: {}  Avg Loss: {:.4f}   Recall: {:.4f}   Precision: {:.4f}"
                     .format(engine.state.epoch, avg_loss, recall, precision))
         epoch = engine.state.epoch
-        env_name = 'end_task_train'
+        env_name = ENV_NAME
         viz.line(np.array([avg_loss]), np.array([epoch]), win='train_epoch_loss',
                  env=env_name, update='append', name='train_epoch_loss', opts={'title': 'train_epoch_loss'})
         viz.line(np.array([recall]), np.array([epoch]), win='train_recall',
@@ -95,20 +99,23 @@ def do_train(
             evaluator.run(val_loader)
             metrics = evaluator.state.metrics
             avg_loss = metrics['ce_loss']
+            logger.info("Validation Results - Epoch: {} Avg Loss: {:.4f}".format(engine.state.epoch, avg_loss))
+
             recall = metrics['recall']
             precision = metrics['precision']
             logger.info("Validation Results - Epoch: {} Avg Loss: {:.4f}   Recall: {:.4f}   Precision: {:.4f}"
                         .format(engine.state.epoch, avg_loss, recall, precision)
                         )
             epoch = engine.state.epoch
+            env_name = ENV_NAME
             viz.line(np.array([avg_loss]), np.array([epoch]), win='val_epoch_loss',
-                     env='DenseFusionModel', update='append', name='val_epoch_loss', opts={'title': 'val_epoch_loss'})
+                     env=env_name, update='append', name='val_epoch_loss', opts={'title': 'val_epoch_loss'})
             viz.line(np.array([recall]), np.array([epoch]), win='val_recall',
-                     env='DenseFusionModel', update='append', name='val_recall', opts={'title': 'val_epoch_recall'})
+                     env=env_name, update='append', name='val_recall', opts={'title': 'val_epoch_recall'})
             viz.line(np.array([precision]), np.array([epoch]), win='val_precision',
-                     env='DenseFusionModel', update='append', name='val_precision', opts={'title': 'val_epoch_precision'})
+                     env=env_name, update='append', name='val_precision', opts={'title': 'val_epoch_precision'})
             viz.line(np.array([precision]), np.array([recall]), win='val_ROC',
-                     env='DenseFusionModel', update='append', name='val_ROC', opts={'title': 'val_ROC'})
+                     env=env_name, update='append', name='val_ROC', opts={'title': 'val_ROC'})
 
     # adding handlers using `trainer.on` decorator API
     @trainer.on(Events.EPOCH_COMPLETED)

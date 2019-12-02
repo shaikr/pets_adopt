@@ -14,8 +14,10 @@ def build_model(cfg):
     # model = ResNet18(1) #cfg.MODEL.NUM_CLASSES)
     model_ft = resnet18(pretrained=True, progress=True)
     # set_parameter_requires_grad(model_ft, False)
-    # num_features = model_ft.fc.in_features
-    # model_ft.fc = nn.Linear(num_features, 1)
+    num_features = model_ft.fc.in_features
+    model_ft.fc = nn.Linear(num_features, 2)  # single label
+    # model_ft.fc = nn.Linear(num_features, 1)  # single label
+    # model_ft.fc = nn.Linear(num_features, 160)  # label is Breed1
     # model_ft=ConcatModel(512,142)
     # model_ft = DenseBeforeFusion(512, 142)
     # model_ft=DenseFusionModel(512,142)
