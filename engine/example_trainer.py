@@ -89,6 +89,7 @@ def do_train(
         viz.line(np.array([precision]), np.array([recall]), win='train_ROC',
                  env=env_name, update='append', name='train_ROC', opts={'title': 'train_ROC'})
 
+
     if val_loader is not None:
         @trainer.on(Events.EPOCH_COMPLETED)
         def log_validation_results(engine):

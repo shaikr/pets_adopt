@@ -40,8 +40,8 @@ def inference(
     # adding handlers using `evaluator.on` decorator API
     @evaluator.on(Events.EPOCH_COMPLETED)
     def compute_metrics(engine):
-        preds = pred_accumulator.compute()[0]
-        labels = label_accumulator.compute()[0]
+        preds = torch.sigmoid(pred_accumulator.compute()[0])
+        labels = torch.sigmoid(label_accumulator.compute()[0])
 
         np.save(os.path.join(cfg.OUTPUT_DIR, 'preds.npy'), preds)
         np.save(os.path.join(cfg.OUTPUT_DIR, 'labels.npy'), labels)

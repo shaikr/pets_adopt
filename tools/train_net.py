@@ -8,6 +8,8 @@ import argparse
 import os
 import sys
 from os import mkdir
+
+import torch
 from torchsummary import summary
 import torch.nn.functional as F
 
@@ -21,8 +23,6 @@ from modeling import build_model
 from solver import make_optimizer
 
 from utils.logger import setup_logger
-
-import torch
 
 
 def train(cfg):
@@ -39,7 +39,10 @@ def train(cfg):
     val_loader = make_data_loader(cfg, is_train=False)
 
     def fixed_binary_cross_entropy(input, target):
-        return F.binary_cross_entropy_with_logits(input.squeeze(), target)
+        one_hot = torch.cuda.FloatTensor(target.size(0), 1, target.size(2), target.size(3)).zero_()
+        target = one_hot.scatter_(1, target.data, 1)
+        return F.binary_cross_entropy_with_logits(input.squeeze(), target,
+                                                  weight=torch.FloatTensor([2, 1]).cuda().repeat(target.shape[0], 1))
 
     do_train(
         cfg,

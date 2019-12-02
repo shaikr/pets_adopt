@@ -93,12 +93,12 @@ _C.SOLVER.IMS_PER_BATCH = 128
 _C.TEST = CN()
 # _C.TEST.IMS_PER_BATCH = 256
 _C.TEST.IMS_PER_BATCH = 128
-_C.TEST.WEIGHT = "/media/ron/Data/google_time/exps/resnet18_224_224/resnet18_model_2.pth"  # with MSE
-_C.TEST.WEIGHT = "/media/ron/Data/google_time/exps/resnet18_224_224/resnet18_model_2.pth"  # with BCElogits
+_C.TEST.WEIGHT = "/home/guy/dev/google-time/exps/ultra_godlike_model/resnet18_bce_model_3.pth"  # with MSE
+# _C.TEST.WEIGHT = "/media/ron/Data/google_time/exps/resnet18_224_224/resnet18_model_2.pth"  # with BCElogits
 
 # ---------------------------------------------------------------------------- #
 # Misc options
 # ---------------------------------------------------------------------------- #
 # _C.OUTPUT_DIR = "/home/bukchin/google-time/exps/test-new-vectors"
-_C.OUTPUT_DIR = "/media/ron/Data/google_time/exps/imageneto_vecs_all_data"
+_C.OUTPUT_DIR = "/home/guy/dev/google-time/exps/ultra_godlike_class_weights_ahh"
 _C.THRESHOLD = 0.5

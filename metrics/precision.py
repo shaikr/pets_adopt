@@ -25,9 +25,16 @@ class Precision(_BaseClassification):
 
     def update(self, output):
         y_pred_raw, y = output
-        y_pred = torch.exp(y_pred_raw) / (torch.exp(y_pred_raw) + 1) > self.threshold
-        self.false_positives += torch.all(torch.cat([(y_pred == 1), (y == 0)[:, None]], axis=1), axis=1).sum()
-        self.true_positives += torch.all(torch.cat([(y_pred == 1), (y == 1)[:, None]], axis=1), axis=1).sum()
+        y_pred = torch.sigmoid(y_pred_raw).squeeze() > self.threshold
+        pred_true = y_pred == 1
+        label_true = y == 1
+        label_false = y == 0
+
+        self.false_positives += (pred_true * label_false).sum()
+        self.true_positives += (pred_true * label_true).sum()
+        # y_pred = torch.exp(y_pred_raw) / (torch.exp(y_pred_raw) + 1) > self.threshold
+        # self.false_positives += torch.all(torch.cat([(y_pred == 1), (y == 0)[:, None]], axis=1), axis=1).sum()
+        # self.true_positives += torch.all(torch.cat([(y_pred == 1), (y == 1)[:, None]], axis=1), axis=1).sum()
 
     def compute(self):
         if self.false_positives + self.true_positives == 0:
